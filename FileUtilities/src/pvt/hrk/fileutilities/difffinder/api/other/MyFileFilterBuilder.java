@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import pvt.hrk.fileutilities.utils.ObjectUtils;
+
 public class MyFileFilterBuilder {
 	 private static final Logger LOGGER = Logger.getLogger(MyFileFilterBuilder.class
 	            .getClass().getName());
@@ -41,9 +43,9 @@ public class MyFileFilterBuilder {
 				String fileName = file.getName();
 				boolean retVal;
 
-				if (!DiffFinderUtils.isNullOrEmpty(excludeFileNamesContaining)) {
+				if (!ObjectUtils.isNullOrEmpty(excludeFileNamesContaining)) {
 					retVal= excludeFileNamesContaining.stream().noneMatch(name -> fileName.contains(name));
-				} else if (!DiffFinderUtils.isNullOrEmpty(includeOnlyFileNamesContaining)) {
+				} else if (!ObjectUtils.isNullOrEmpty(includeOnlyFileNamesContaining)) {
 					retVal= includeOnlyFileNamesContaining.stream().anyMatch(name -> fileName.contains(name));
 				}else {
 					retVal= true; //allow by default

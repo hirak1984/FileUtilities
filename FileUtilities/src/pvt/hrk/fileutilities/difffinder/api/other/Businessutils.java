@@ -1,6 +1,6 @@
 package pvt.hrk.fileutilities.difffinder.api.other;
 
-import static pvt.hrk.fileutilities.difffinder.api.other.DiffFinderUtils.MD5HashFile;
+import static pvt.hrk.fileutilities.utils.ObjectUtils.MD5HashFile;
 
 import java.io.File;
 import java.io.IOException;

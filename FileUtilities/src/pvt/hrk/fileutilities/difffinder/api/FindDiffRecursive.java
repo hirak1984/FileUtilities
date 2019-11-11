@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import pvt.hrk.fileutilities.difffinder.api.handlers.ResultHandler;
-import pvt.hrk.fileutilities.difffinder.api.other.DiffFinderUtils;
+import pvt.hrk.fileutilities.utils.ObjectUtils;
 public class FindDiffRecursive {
 
 	/**
@@ -26,7 +26,7 @@ public class FindDiffRecursive {
 			Map<String, File> fileMap1 = _fileNameFileMap(file1.listFiles(filter));
 			Map<String, File> fileMap2 =_fileNameFileMap(file2.listFiles(filter));
 
-			Set<String> commonFilesByNames = DiffFinderUtils.findIntersection(fileMap1.keySet(), fileMap2.keySet());
+			Set<String> commonFilesByNames = ObjectUtils.findIntersection(fileMap1.keySet(), fileMap2.keySet());
 			commonFilesByNames.parallelStream().forEach(commonFileName -> {
 				File f1 = fileMap1.get(commonFileName);
 				File f2 = fileMap2.get(commonFileName);
@@ -40,7 +40,7 @@ public class FindDiffRecursive {
 			fileMap2.forEach((k, v) -> handler.addMissingInSource(v));
 
 		} else if (file1.isFile() && file2.isFile()) {
-			if (!DiffFinderUtils.areContentsEqual(file1, file2)) {
+			if (!ObjectUtils.areContentsEqual(file1, file2)) {
 				handler.addContentMismatch(file1,file2);
 			} else {
 				// do nothing. the file paths and contents are both matching.

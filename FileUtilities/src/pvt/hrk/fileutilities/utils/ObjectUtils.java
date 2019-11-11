@@ -1,4 +1,4 @@
-package pvt.hrk.fileutilities.difffinder.api.other;
+package pvt.hrk.fileutilities.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,22 +10,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
-public final class DiffFinderUtils {
-
-	public static <T> boolean isNullOrEmpty(Collection<T> col) {
-		return col == null || col.isEmpty();
-	}
-
-	public static <T> boolean isNullOrEmpty(T[] arr) {
-		return arr == null || arr.length == 0;
-	}
+public final class ObjectUtils {
 
 	public static <T> Set<T> convertToSet(T[] array) {
 		return new HashSet<T>(Arrays.asList(array));
 	}
-
+	public static <T> boolean isNullOrEmpty(final T[] arr) {
+		return arr == null || arr.length == 0;
+	}
+	public static boolean isNullOrEmpty(final String str) {
+		return str == null || str.length() == 0;
+	}
+	public static <T> boolean isNullOrEmpty(final Collection<T> col) {
+		return col == null || col.size() == 0;
+	}
+	public static <K,V> boolean isNullOrEmpty(final Map<K,V> map) {
+		return map == null || map.size() == 0;
+	}
 	public static <T> Set<T> findIntersection(Set<T> set1, Set<T> set2) {
 		Set<T> commonFilesByName = new HashSet<>();
 		Iterator<T> it = set1.iterator();

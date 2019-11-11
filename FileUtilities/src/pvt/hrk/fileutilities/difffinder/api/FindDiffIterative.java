@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import pvt.hrk.fileutilities.difffinder.api.handlers.ResultHandler;
 import pvt.hrk.fileutilities.difffinder.api.other.Businessutils;
-import pvt.hrk.fileutilities.difffinder.api.other.DiffFinderUtils;
+import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class FindDiffIterative {
 	 private static final Logger LOGGER = Logger.getLogger(FindDiffIterative.class
@@ -31,7 +31,7 @@ public class FindDiffIterative {
 				Map<String, File> fileMap1 = _fileNameFileMap(src.listFiles(filter));
 				Map<String, File> fileMap2 = _fileNameFileMap(tar.listFiles(filter));
 
-				Set<String> commonFilesByNames = DiffFinderUtils.findIntersection(fileMap1.keySet(), fileMap2.keySet());
+				Set<String> commonFilesByNames = ObjectUtils.findIntersection(fileMap1.keySet(), fileMap2.keySet());
 				commonFilesByNames.stream().forEach(commonFileName -> {
 					File f1 = fileMap1.get(commonFileName);
 					File f2 = fileMap2.get(commonFileName);
