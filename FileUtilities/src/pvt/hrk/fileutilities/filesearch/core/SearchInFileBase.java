@@ -1,4 +1,4 @@
-package pvt.hrk.fileutilities.filesearch.main;
+package pvt.hrk.fileutilities.filesearch.core;
 
 
 
@@ -6,9 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Predicate;
 
+
 import pvt.hrk.fileutilities.utils.StringSearchUtilities.StringSearchModes;
 
-public abstract class SearchInFileBase {
+public abstract class SearchInFileBase  {
 
 	
 	private String searchString;
@@ -23,9 +24,9 @@ public abstract class SearchInFileBase {
 	
 	protected Predicate<String> match=line-> searchMode.doSearch(line, searchString);
 	
-	public boolean searchInName() {
+	public boolean foundInName() {
 		return match.test(file.getAbsolutePath());
 	}
-	protected abstract boolean searchContents() throws IOException;
+	public abstract boolean foundInContents() throws IOException;
 
 }

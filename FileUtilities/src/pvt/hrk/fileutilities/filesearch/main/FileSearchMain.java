@@ -1,16 +1,21 @@
 package pvt.hrk.fileutilities.filesearch.main;
 
-
-
 import static pvt.hrk.fileutilities.utils.ObjectUtils.isNullOrEmpty;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import pvt.hrk.fileutilities.utils.StringSearchUtilities;
+import pvt.hrk.fileutilities.difffinder.api.other.MyFileFilterBuilder;
+import pvt.hrk.fileutilities.filesearch.core.SearchInFileBase;
+import pvt.hrk.fileutilities.filesearch.core.SearchInFileFactory;
+import pvt.hrk.fileutilities.filesearch.other.FileSearchResultHandler;
+import pvt.hrk.fileutilities.filesearch.other.MyResultHandler;
 
 public class FileSearchMain {
 
@@ -18,85 +23,68 @@ public class FileSearchMain {
 	 * Input section
 	 */
 	private static final String searchString = "%VehicleIncident%";
-	private static final String[] searchLocations = { "C:\\Users\\configuration" };
-	private static final SearchModes searchMode = SearchModes.FileNameAndContent;
-	private static final String[] ignorables = { "class", "png", "jpg", "jpeg", "pcfc", "gif", "ico", "dll", "lock",
-			"mp4", "node", "gz", "DS_Store", "un~", "node_modules" };
-	// Input section end
+	private static final String[] searchLocations = {"C:\\Guidewire\\9\\ClaimCenter907"}; 
 
 	public static void main(String[] args) {
-
-		if (searchLocations != null) {
-			Stream.of(searchLocations).forEach(searchLocation -> {
-				File searchIn = new File(searchLocation);
-				System.out.println("=====Searching in :-" + searchLocation + "=====");
-				Set<String> results = new HashSet<>();
-				try {
-					search(searchIn, searchString, results);
-				} catch (Exception e) {
-					handleException(e, searchIn);
-				}
-				if (isNullOrEmpty(results)) {
-					System.out.println("Nothing found");
-				} else {
-					results.forEach(System.out::println);
-				}
-
-			});
-		} else {
-			System.out.println("Nowhere to search");
+		Stream.of(searchLocations).forEach(searchLocation -> {
+			File searchIn = new File(searchLocation);
+			if (LOGGER.isLoggable(Level.INFO)) {
+				LOGGER.info("=====Searching in :-" + searchLocation + "=====");
+			}
+			try {
+				FileSearchResultHandler handler = new MyResultHandler();
+				search(searchIn, searchString, handler);
+				handler.handle();
+			} catch (Exception e) {
+				logAndIgnoreExceptions(e, searchIn);
+			}
+		});
+		if (LOGGER.isLoggable(Level.INFO)) {
+			LOGGER.info("Done");
 		}
-		System.out.println("Done");
 	}
 
-	private static void search(File source, String searchStr, Set<String> results) {
-		if (source.isDirectory()) {
-			// If directory, traverse recursively
-			File[] files = source.listFiles((f) -> !(results.contains(f.getAbsolutePath()) || Stream.of(ignorables)
-					.parallel().anyMatch(s -> StringSearchUtilities.endsWithIgnoreCase.test(f.getName(), s))));
-			if (!isNullOrEmpty(files)) {
-				Stream.of(files).parallel().forEach(file -> {
-					search(file, searchStr, results);
-				});
-			}
+	private static void search(File source, String searchStr, FileSearchResultHandler handler) {
+		if (handler.hasBeenVisitedBefore(source)) {
+			return;
 		} else {
-			if (!results.contains(source.getAbsolutePath())) {
+			if (source.isDirectory()) {
+				// If directory, traverse recursively
+				List<File> files = Arrays.stream(source.listFiles(filter)).collect(Collectors.toList());
+
+				if (!isNullOrEmpty(files)) {
+					files.parallelStream().forEach(file -> {
+						search(file, searchStr, handler);
+					});
+				}
+			} else if (source.isFile()) {
 				try {
-					SearchInFileBase searchInFile = null;
-					if (isZipFile.test(source.getAbsolutePath())) {
-						searchInFile = new SearchInZipFile(source, searchStr);
+					SearchInFileBase searchInFile = new SearchInFileFactory(source, searchStr).get();
+					if (searchInFile.foundInName() || searchInFile.foundInContents()) {
+						handler.addToResults(source);
 					} else {
-						searchInFile = new SearchInTextFile(source, searchStr);
-					}
-					switch (searchMode) {
-					case FileNameOnly:
-						if (searchInFile.searchInName()) {
-							results.add(source.getAbsolutePath());
-						}
-						break;
-					default:
-						if (searchInFile.searchInName() || searchInFile.searchContents()) {
-							results.add(source.getAbsolutePath());
-						}
+						// this file doesn't contain the search string in name or contents
 					}
 				} catch (Exception e) {
-					handleException(e, source);
+					logAndIgnoreExceptions(e, source);
 				}
+			} else {
+				// Do nothing. unsupported
 			}
 		}
 	}
 
-	private static void handleException(Throwable t, File file) {
-		 System.err.println("Error reading file:" + file.toPath());
-		t.printStackTrace();
+	private static void logAndIgnoreExceptions(Throwable t, File file) {
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.log(Level.FINE, "Error reading file:" + file.toPath(), t);
+		}
 	}
 
-	private static final Predicate<String> isZipFile = filePath -> {
-		return Stream.of(new String[] { "zip", "jar" }).parallel()
-				.anyMatch(s -> StringSearchUtilities.endsWithIgnoreCase.test(filePath, s));
-	};
+	private static final FileFilter filter = new MyFileFilterBuilder()
+			.excludeFileNamesContaining(Arrays.asList(new String[] { "class", "png", "jpg", "jpeg", "pcfc", "gif",
+					"ico", "dll", "lock", "mp4", "node", "gz", "DS_Store", "un~", "node_modules" }))
+			.build();
+	// Input section end
+	private static final Logger LOGGER = Logger.getLogger(FileSearchMain.class.getClass().getName());
 
-	enum SearchModes {
-		FileNameOnly, FileNameAndContent;
-	}
 }

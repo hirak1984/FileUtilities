@@ -9,8 +9,8 @@ import pvt.hrk.fileutilities.difffinder.api.FindDifference;
 import pvt.hrk.fileutilities.difffinder.api.handlers.CSVResultHandler;
 import pvt.hrk.fileutilities.difffinder.api.other.MyFileFilterBuilder;
 
-public class CmdMain {
-	 private static final Logger LOGGER = Logger.getLogger(CmdMain.class
+public class DifffinderMain {
+	 private static final Logger LOGGER = Logger.getLogger(DifffinderMain.class
 	            .getClass().getName());
 	public static void main(String[] args) {
 		if (args != null && args.length >= 3) {

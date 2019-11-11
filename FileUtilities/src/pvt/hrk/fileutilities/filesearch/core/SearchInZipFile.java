@@ -1,4 +1,4 @@
-package pvt.hrk.fileutilities.filesearch.main;
+package pvt.hrk.fileutilities.filesearch.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ public class SearchInZipFile extends SearchInFileBase {
 	}
 
 	@Override
-	protected boolean searchContents() throws IOException {
+	public boolean foundInContents() throws IOException {
 		try (ZipFile zf = new ZipFile(file)) {
 			Enumeration<? extends ZipEntry> e = zf.entries();
 			while (e.hasMoreElements()) {
@@ -27,9 +27,7 @@ public class SearchInZipFile extends SearchInFileBase {
 					} else {
 						try (InputStream inputStream = zf.getInputStream(entry);
 								BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-							if (reader.lines().parallel().anyMatch(match)) {
-								return true;
-							}
+							return reader.lines().parallel().anyMatch(match);
 						}
 					}
 				}
