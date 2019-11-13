@@ -70,7 +70,8 @@ public class MyFileFilterBuilder {
 
 	boolean isPartOfIncludedList(String fileName) {
 		if (ObjectUtils.isNullOrEmpty(includeOnlyFileNamesContaining)) {
-			return false;
+			//if included list is empty, that means everything is included.
+			return true;
 		} else {
 			return includeOnlyFileNamesContaining.stream().anyMatch(name -> fileName.contains(name));
 		}

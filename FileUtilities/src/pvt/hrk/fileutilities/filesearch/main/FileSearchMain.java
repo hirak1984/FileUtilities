@@ -17,15 +17,16 @@ public class FileSearchMain {
 	/**
 	 * Input section
 	 */
-	private static final String searchString = "%type=\"retireable\"%";
-	private static final String[] searchLocations = { "C:\\Guidewire\\9\\BillingCenter906" };
+	private static final String searchString = "apache-ant-1.7";
+	private static final String[] searchLocations = { "C:\\" };
 	private static final FileFilter filter = new MyFileFilterBuilder()
-			.includeOnlyFileNamesContaining(new String[] { ".eti", ".etx", ".tti", ".ttx" }).excludeFileNamesContaining(Arrays.asList(new String[] { ".class", ".png", ".jpg", ".jpeg", ".pcfc", ".gif",
-							".ico", ".dll", ".lock", ".mp4", "node", ".gz", "DS_Store", "un~", "node_modules" }))
+			//.includeOnlyFileNamesContaining(new String[] { ".gs"})
+			.excludeFileNamesContaining(Arrays.asList(new String[] { ".class", ".png", ".jpg", ".jpeg", ".pcfc", ".gif",
+							".ico", ".dll", ".lock", ".mp4", "node", ".gz", "DS_Store", "un~", "node_modules","ISBTF","PolicyCenter900-SmartCommunications-4.0.2" }))
 					.build();
 	private static final BiConsumer<File, Throwable> logAndIgnoreExceptions = (f, t) -> {
 		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.log(Level.FINE, "Error reading file:" + f.toPath(), t);
+			LOGGER.log(Level.SEVERE, "Error reading file:" + f.toPath(), t);
 		}
 	};
 
