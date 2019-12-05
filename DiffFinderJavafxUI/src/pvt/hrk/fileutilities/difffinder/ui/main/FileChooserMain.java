@@ -16,8 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -34,7 +36,7 @@ public class FileChooserMain extends Application {
 	File firstDirectory = null;
 	File secondDirectory = null;
 	File outputDirectory = null;
-	
+	String outputFile = "Results.csv";
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -81,6 +83,10 @@ public class FileChooserMain extends Application {
 
 		TextFlow selectOutputDirectoryLabel = configureLabel();
 		selectOutputDirectoryLabel.setVisible(false);
+		TextField outputFileName = new TextField ("\\"+outputFile);
+		outputFileName.setVisible(false);
+		HBox hbox = new HBox(selectOutputDirectoryLabel,outputFileName);
+		
 		Button selectOutputDirectoryButton = new Button(displayKey.valueFor("OUTPUT_DIR"));
 		selectOutputDirectoryButton.setOnAction(e -> {
 			DirectoryChooser chooser3 = configureDirectoryChooser(lastVisitedDirectory);
@@ -90,18 +96,30 @@ public class FileChooserMain extends Application {
 				lastVisitedDirectory = dir.getParent();
 				addSelectedFilePath(selectOutputDirectoryLabel, dir);
 				selectOutputDirectoryLabel.setVisible(true);
+				outputFileName.setVisible(true);
+				outputFileName.requestFocus();
 			}
 
 		});
 
+
 		Button startComparison = new Button(displayKey.valueFor("COMPARE"));
 		startComparison.setOnAction(e -> {
+			
+			String outputCSVFileName = outputFileName.getText();
+			if(outputCSVFileName==null) {
+				outputCSVFileName =outputFile;
+			}else{
+				outputCSVFileName = outputCSVFileName.replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}\\.]", "");
+			}
+			File outputCSVFile = new File(outputDirectory,outputCSVFileName);
+
 			results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("INVOKING_MSG"), MessageMode.NEUTRAL.getConsumer()));
 			results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("SELECTED_FIRST_DIR",new Object[] {firstDirectory}), MessageMode.NEUTRAL.getConsumer()));
 			results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("SELECTED_SECOND_DIR",new Object[] {secondDirectory}), MessageMode.NEUTRAL.getConsumer()));
-			results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("SELECTED_OUTPUT_DIR",new Object[] {outputDirectory}), MessageMode.NEUTRAL.getConsumer()));
-
-			Task<Void> backgroundTask = new BackgroundTask(firstDirectory, secondDirectory, outputDirectory);
+			results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("SELECTED_OUTPUT_FILE",new Object[] {outputCSVFile}), MessageMode.NEUTRAL.getConsumer()));
+			
+			Task<Void> backgroundTask = new BackgroundTask(firstDirectory, secondDirectory,outputCSVFile);
 			final ProgressIndicator progressIndicator = new ProgressIndicator(0);
 			progressIndicator.setProgress(0);
 			progressIndicator.progressProperty().unbind();
@@ -128,7 +146,9 @@ public class FileChooserMain extends Application {
 						root.getChildren().remove(progressIndicator);
 						return;
 					case FAILED:
-						results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("FAILED"), MessageMode.ERROR.getConsumer()));
+						Throwable exception = backgroundTask.getException();
+						exception.printStackTrace();
+						results.getItems().add(TextHelper.stylizeTextAddTimestamp(displayKey.valueFor("FAILED",new Object[] {exception.getLocalizedMessage()}), MessageMode.ERROR.getConsumer()));
 						root.getChildren().remove(progressIndicator);
 						return;
 					case SUCCEEDED:
@@ -144,7 +164,7 @@ public class FileChooserMain extends Application {
 		});
 
 		VBox vBox = new VBox(selectFirstDirectoryButton, selectFirstDirectoryLabel, selectSecondDirectoryButton,
-				selectSecondDirectoryLabel, selectOutputDirectoryButton, selectOutputDirectoryLabel);
+				selectSecondDirectoryLabel,selectOutputDirectoryButton,hbox);
 		TitledPane titledPane = new TitledPane(displayKey.valueFor("BOX"), vBox);
 		titledPane.autosize();
 		titledPane.setCollapsible(false);

@@ -5,13 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class CSVResultHandler implements ResultHandler {
+/**
+ * Doesn't keep results in memory.
+ * Keeps on writing to disk whenever a new record is received.
+ * @author hchatterjee
+ *
+ */
+public class CSVStreamResultHandler implements ResultHandler {
 
-	FileOutputStream fos;
-	File outputFile;
+	protected FileOutputStream fos;
+	protected File outputFile;
 	private static final String SEPARATOR = ",";
-	private static final String Header = new StringBuilder().append("Source File Path").append(SEPARATOR)
-			.append("Target File Path").append(SEPARATOR).append("Conflict Type").toString();
+	private static final String Header = new StringBuilder().append("Conflict Type").append(SEPARATOR).append("Source File Path").append(SEPARATOR)
+			.append("Target File Path").toString();
 
 	private enum CONFLICT_TYPE {
 		MISSING_IN_SOURCE("No such file in source(left) directory"), MISSING_IN_TARGET(
@@ -30,7 +36,10 @@ public class CSVResultHandler implements ResultHandler {
 		}
 	}
 
-	public CSVResultHandler(File resultsFile) throws FileNotFoundException {
+	public CSVStreamResultHandler(File resultsFile) throws FileNotFoundException {
+		if(resultsFile==null) {
+			throw new IllegalArgumentException("Selected output file/directory can't be null");
+		}
 		resultsFile.getParentFile().mkdirs();
 		if (resultsFile.isDirectory()) {
 			outputFile = new File(resultsFile, "results.csv");
@@ -86,6 +95,13 @@ public class CSVResultHandler implements ResultHandler {
 
 	private String generateOutputLine(File sourceFile, File targetFile, CONFLICT_TYPE type) {
 		StringBuilder sb = new StringBuilder();
+		if (type != null) {
+			sb.append(type.DisplayName());
+		} else {
+			sb.append("");
+		}
+		sb.append(SEPARATOR);
+		
 		if (sourceFile != null) {
 			sb.append(sourceFile.getAbsolutePath());
 		} else {
@@ -97,12 +113,7 @@ public class CSVResultHandler implements ResultHandler {
 		} else {
 			sb.append("");
 		}
-		sb.append(SEPARATOR);
-		if (type != null) {
-			sb.append(type.DisplayName());
-		} else {
-			sb.append("");
-		}
+		
 		sb.append(System.lineSeparator());
 
 		return sb.toString();

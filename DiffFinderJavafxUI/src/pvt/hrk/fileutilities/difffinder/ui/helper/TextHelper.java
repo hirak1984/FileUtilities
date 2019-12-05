@@ -38,7 +38,7 @@ public class TextHelper {
 		}
 
 	}
-private static final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH24:mm:ss");
+private static final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 	public static Text stylizeText(String value, Consumer<Text> textStyleConsumer) {
 		Text text = new Text(value);
 		textStyleConsumer.accept(text);
