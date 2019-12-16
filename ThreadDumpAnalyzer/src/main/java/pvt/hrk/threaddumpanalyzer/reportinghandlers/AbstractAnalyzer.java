@@ -29,7 +29,7 @@ public abstract class AbstractAnalyzer implements Consumer<List<DumpFile>> {
 	@Override
 	public void accept(List<DumpFile> dumpFiles) {
 		if (isEnabled) {
-			File file = new File(AvailableProperties.INSTANCE.REPORTS_DIRECTORY(), analyzerName + ".log");
+			File file = new File(AvailableProperties.INSTANCE.REPORT_DIR(), analyzerName + ".log");
 			System.out.println("Analyzer : " + analyzerName + ", location: "+file.getAbsolutePath());
 			try (FileOutputStream fos = new FileOutputStream(file)) {
 				doWork(dumpFiles, fos);

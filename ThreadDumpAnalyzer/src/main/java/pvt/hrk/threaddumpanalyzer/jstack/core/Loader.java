@@ -27,7 +27,7 @@ public class Loader {
 			threadDumpFiles = source.listFiles(file -> file.isFile());
 		}
 
-		List<DumpFile> dumpFiles = Arrays.stream(threadDumpFiles).parallel().map(Loader::parseFile)
+		List<DumpFile> dumpFiles = Arrays.stream(threadDumpFiles).map(Loader::parseFile)
 				.collect(Collectors.toList());
 		return dumpFiles;
 	}

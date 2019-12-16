@@ -13,17 +13,18 @@ public class DumpThread {
 	private List<String> stackTrace;
 	private String stackTraceAsString;
 	private String threadName;
-	private Pair<String, String> state;
+	
 
 	/**
 	 * properties that could vary by jvm
 	 */
-	private Optional<Boolean> daemon;
-	private Optional<Integer> priority;
-	private Optional<Long> tid;
-	private Optional<Long> nid;
-	private Optional<String> message;
-	private Optional<String> identifier;
+	private Optional<Pair<String,String>> state=Optional.ofNullable(null);
+	private Optional<Boolean> daemon=Optional.ofNullable(null);
+	private Optional<Integer> priority=Optional.ofNullable(null);
+	private Optional<Long> tid=Optional.ofNullable(null);
+	private Optional<Long> nid=Optional.ofNullable(null);
+	private Optional<String> message=Optional.ofNullable(null);
+	private Optional<String> identifier=Optional.ofNullable(null);
 
 	public DumpThread(List<String> stackTrace) {
 		super();
@@ -53,11 +54,11 @@ public class DumpThread {
 		this.threadName = threadName;
 	}
 
-	public Pair<String, String> getState() {
+	public Optional<Pair<String, String>> getState() {
 		return state;
 	}
 
-	public void setState(Pair<String, String> state) {
+	public void setState(Optional<Pair<String, String>> state) {
 		this.state = state;
 	}
 

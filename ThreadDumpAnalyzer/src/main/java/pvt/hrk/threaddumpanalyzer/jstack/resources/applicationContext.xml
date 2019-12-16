@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<tx:annotation-driven proxy-target-class="true"
+		transaction-manager="transactionManager" />
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations"
+			value="classpath:main/java/pvt/hrk/threaddumpanalyzer/jstack/resources/threaddumpanalyzer.properties" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.pwd}" />
+	</bean>
+
+	<bean id="dbService"
+		class="main.java.pvt.hrk.threaddumpanalyzer.database.TransactionAwareDatabaseServiceImpl">
+		<property name="databaseHandler" ref="dbHandler"></property>
+	</bean>
+
+	<bean id="dbHandler"
+		class="main.java.pvt.hrk.threaddumpanalyzer.database.DatabaseHandler">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<bean id="propertyHolder"
+		class="main.java.pvt.hrk.threaddumpanalyzer.propertyhandlers.PropertyHolder">
+		<property name="sourceFileOrDir" value="${source_file_or_dir}"></property>
+		<property name="reportsDir" value="${reports_dir}"></property>
+		<property name="parser" value="${parser}"></property>
+	</bean>
+
+</beans>  

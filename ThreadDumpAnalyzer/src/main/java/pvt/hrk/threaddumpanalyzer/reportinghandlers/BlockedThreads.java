@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import main.java.pvt.hrk.threaddumpanalyzer.model.DumpFile;
+import main.java.pvt.hrk.threaddumpanalyzer.model.Pair;
 
 public class BlockedThreads extends AbstractAnalyzer {
 
@@ -25,7 +26,8 @@ public class BlockedThreads extends AbstractAnalyzer {
 		Map<String, List<String>> blockedThreadFileNameMap = new HashMap<>();
 		dumpFiles.forEach(dumpFile -> {
 			dumpFile.getThreads().forEach(dumpThread -> {
-				if (dumpThread.getState().getKey().equals(State.BLOCKED.name()) ){
+				Pair<String,String> state = dumpThread.getState().orElse(null);
+				if (state!=null && state.getKey().equals(State.BLOCKED.name()) ){
 					List<String> values = blockedThreadFileNameMap.get(dumpThread.getStackTraceAsString());
 					if (values == null) {
 						values = new ArrayList<>();

@@ -1,26 +1,31 @@
 package main.java.pvt.hrk.threaddumpanalyzer.jstack.main;
 
-import java.io.IOException;
 import java.util.List;
 
-import main.java.pvt.hrk.threaddumpanalyzer.jstack.core.Loader;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import main.java.pvt.hrk.threaddumpanalyzer.database.TransactionAwareDatabaseServiceImpl;
 import main.java.pvt.hrk.threaddumpanalyzer.jstack.core.Analyzer;
+import main.java.pvt.hrk.threaddumpanalyzer.jstack.core.Loader;
 import main.java.pvt.hrk.threaddumpanalyzer.model.DumpFile;
 import main.java.pvt.hrk.threaddumpanalyzer.propertyhandlers.AvailableProperties;
+import main.java.pvt.hrk.threaddumpanalyzer.propertyhandlers.PropertyHolder;
 
 public class Main {
-	//public static final File ThreadDumpSourceFileOrDir = new File("C:\\tmp\\performance_analysis\\Thread_0404_7PM");
-	//public static final File AnalysisReportsFolder = new File(ThreadDumpSourceFileOrDir,"reports");
 
-	public static void main(String[] args) throws IOException {
-		if(args==null || args.length==0) {
-			AvailableProperties.INSTANCE.init(null);
-		}else {
-			AvailableProperties.INSTANCE.init(args[0]);	
+	public static void main(String[] args){
+		try(FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext("C:\\Users\\hchatterjee\\git\\FileUtilities\\ThreadDumpAnalyzer\\src\\main\\java\\pvt\\hrk\\threaddumpanalyzer\\jstack\\resources\\applicationContext.xml")){
+			PropertyHolder propertyHolder = (PropertyHolder) ctx.getBean("propertyHolder");
+			AvailableProperties.INSTANCE.load(propertyHolder);
+			TransactionAwareDatabaseServiceImpl dbService = (TransactionAwareDatabaseServiceImpl) ctx.getBean("dbService");
+			List<DumpFile> dumpFiles = Loader.load();
+			int transactionId = dbService.insertAll(dumpFiles);
+			System.out.println(transactionId);
+			Analyzer.analyze(dumpFiles);
+			
+		}catch (Exception e) {
+		e.printStackTrace();
 		}
-		
-		List<DumpFile> dumpFiles = Loader.load();
-		Analyzer.analyze(dumpFiles);
 	}
 
 }

@@ -11,7 +11,7 @@ import main.java.pvt.hrk.threaddumpanalyzer.reportinghandlers.PrintApplicationTh
 public class Analyzer {
 
 	private static final Consumer<List<DumpFile>> consumers() {
-		return new BlockedThreads().andThen(new PrintApplicationThreads(false))
+		return new BlockedThreads().andThen(new PrintApplicationThreads())
 				.andThen(new CommonThreadInAllDumpFiles());
 	}
 

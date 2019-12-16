@@ -22,7 +22,7 @@ public class PrintApplicationThreads extends AbstractAnalyzer {
 			writeln(os, "Now parsing : " + dumpFile);
 			List<DumpThread> threads = dumpFile.getThreads();
 			for (DumpThread dumpThread : threads) {
-				if (dumpThread.getStackTraceAsString().indexOf("com.guidewire") != -1) {
+				if (dumpThread.getStackTraceAsString().indexOf("caa.bc") != -1) {
 					writeln(os, "******************************");
 					writeln(os, dumpThread.getStackTraceAsString());
 					writeln(os, "******************************");

@@ -36,13 +36,16 @@ public class JStackParsingHandler implements ParsingHandler {
 			throw new RuntimeException(
 					"Not a valid stacktrace : \n" + UtilityMethods.flatten.apply(Arrays.asList(stacktrace)));
 		}
-		Matcher stateMatcher = threadStateIdentifierPattern.matcher(stacktrace[1]);
-		if (stateMatcher.matches()) {
-			thread.setState(new Pair<String, String>(stateMatcher.group(1), stateMatcher.group(2)));
-		} else {
-			throw new RuntimeException(
-					"Not a valid stacktrace : \n" + UtilityMethods.flatten.apply(Arrays.asList(stacktrace)));
+		if(stacktrace.length>1) {
+			Matcher stateMatcher = threadStateIdentifierPattern.matcher(stacktrace[1]);
+			if (stateMatcher.matches()) {
+				thread.setState(Optional.ofNullable(new Pair<String, String>(stateMatcher.group(1), stateMatcher.group(2))));
+			} else {
+				throw new RuntimeException(
+						"Not a valid stacktrace : \n" + UtilityMethods.flatten.apply(Arrays.asList(stacktrace)));
+			}	
 		}
+		
 		return thread;
 	}
 
