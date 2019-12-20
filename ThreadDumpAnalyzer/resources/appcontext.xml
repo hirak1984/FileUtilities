@@ -6,24 +6,22 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
+ <bean id="propConfig" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:threaddumpanalyzer.properties"/>
+ 
+    </bean>
 	<tx:annotation-driven proxy-target-class="true"
 		transaction-manager="transactionManager" />
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations"
-			value="classpath:main/java/pvt/hrk/threaddumpanalyzer/jstack/resources/threaddumpanalyzer.properties" />
-	</bean>
-
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
-		<property name="url" value="${jdbc.url}"/>
-		<property name="username" value="${jdbc.user}" />
-		<property name="password" value="${jdbc.pwd}" />
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
 	</bean>
 
 	<bean id="dbService"
@@ -33,6 +31,9 @@
 
 	<bean id="dbHandler"
 		class="main.java.pvt.hrk.threaddumpanalyzer.database.DatabaseHandler">
+		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	<bean id="propertyHolder"

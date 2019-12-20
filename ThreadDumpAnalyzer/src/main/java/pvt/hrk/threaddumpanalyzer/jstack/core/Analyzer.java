@@ -11,11 +11,13 @@ import main.java.pvt.hrk.threaddumpanalyzer.reportinghandlers.PrintApplicationTh
 public class Analyzer {
 
 	private static final Consumer<List<DumpFile>> consumers() {
-		return new BlockedThreads().andThen(new PrintApplicationThreads())
-				.andThen(new CommonThreadInAllDumpFiles());
+		return new BlockedThreads(false).andThen(new PrintApplicationThreads(false))
+				.andThen(new CommonThreadInAllDumpFiles(false));
 	}
 
 	public static void analyze(List<DumpFile> dumpFiles) {
+		System.out.println("Initializing java analyzers");
 		consumers().accept(dumpFiles);
+		System.out.println("Done");
 	}
 }

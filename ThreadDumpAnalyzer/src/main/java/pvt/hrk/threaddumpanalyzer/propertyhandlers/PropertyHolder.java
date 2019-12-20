@@ -1,10 +1,5 @@
 package main.java.pvt.hrk.threaddumpanalyzer.propertyhandlers;
 
-import java.io.File;
-
-import main.java.pvt.hrk.threaddumpanalyzer.parsinghandlers.ParsingHandler;
-import main.java.pvt.hrk.threaddumpanalyzer.parsinghandlers.ParsingHandlerFactory;
-
 public class PropertyHolder {
 
 	private String sourceFileOrDir;

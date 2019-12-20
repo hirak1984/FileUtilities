@@ -79,10 +79,10 @@ public class JStackParsingHandler implements ParsingHandler {
 
 	@Override
 	public String extractDescriptionIfPossible(List<String> lines) {
-		if(extractDateIfPossible(lines)==null) {
+		if(extractDateIfPossible(lines)!=null) {
 			return lines.get(1);
 		}else {
-			return lines.get(0);
+			return null;
 		}
 	}
 

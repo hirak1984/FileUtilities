@@ -1,13 +1,8 @@
 package main.java.pvt.hrk.threaddumpanalyzer.database;
 
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
-
-import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import main.java.pvt.hrk.threaddumpanalyzer.model.DumpFile;
 import main.java.pvt.hrk.threaddumpanalyzer.model.DumpThread;
 import main.java.pvt.hrk.threaddumpanalyzer.utils.UtilityMethods;
@@ -16,32 +11,25 @@ public class DatabaseHandler {
 	private static final String DumpFile_Insert = "insert into Dump_File (fileName,dateTime,description,linesIgnored,transactionid,id) values (?,?,?,?,?,?)";
 	private static final String DumpThread_Insert = "insert into Dump_Thread (stackTrace,threadName,state,daemon,priority,tid,nid,message,identifier,id,dumpfileid) values (?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_MAX = "select max(COLUMN_NAME) from TABLE_NAME";
-	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplate;
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	private int insert(DumpFile record, int transactionId) {
+	private void insert(DumpFile record, int transactionId) {
 		List<DumpThread> threads = record.getThreads();
 		if (threads == null || threads.size() == 0) {
 			throw new IllegalStateException("DumpThreads list is empty for this DumpFile");
 		}
 		String fileName = record.getFileName();
-		java.sql.Date dateTime = record
-				.getDateTime().<java.sql.Date>map(
-						date -> new java.sql.Date(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))
-				.orElse(null);
+		java.sql.Timestamp dateTime = record.getDateTime().map(UtilityMethods.convertToSQLDateTime).orElse(null);
 		String description = record.getDescription().orElse(null);
 		String linesIgnored = UtilityMethods.flatten.apply(record.getLinesIgnored());
 		Integer transactionid = transactionId;
 		Integer dumpFileId = getNext("Dump_File", "id");
 
-		int rowInserted = jdbcTemplate.update(DumpFile_Insert, fileName, dateTime, description, linesIgnored,
-				transactionid, dumpFileId);
-		// System.out.println(rowInserted);
+		jdbcTemplate.update(DumpFile_Insert, fileName, dateTime, description, linesIgnored, transactionid, dumpFileId);
 		int threadid = getNext("Dump_Thread", "id");
 		for (DumpThread thread : threads) {
 			if (thread.getState() == null) {
@@ -56,11 +44,9 @@ public class DatabaseHandler {
 			Long nid = thread.getNid().orElse(null);
 			String message = thread.getMessage().orElse(null);
 			String identifier = thread.getIdentifier().orElse(null);
-			int rowsInserted = jdbcTemplate.update(DumpThread_Insert, stackTrace, threadName, state, daemon, priority,
-					tid, nid, message, identifier, threadid++, dumpFileId);
-			// System.out.println(rowsInserted);
+			jdbcTemplate.update(DumpThread_Insert, stackTrace, threadName, state, daemon, priority, tid, nid, message,
+					identifier, threadid++, dumpFileId);
 		}
-		return 0;
 	}
 
 	public int insertAll(List<DumpFile> records) {

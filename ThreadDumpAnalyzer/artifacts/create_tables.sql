@@ -1,7 +1,7 @@
 USE [mixed_bag]
 GO
 
-/****** Object:  Table [dbo].[Dump_File]    Script Date: 12/16/2019 10:48:17 AM ******/
+/****** Object:  Table [dbo].[Dump_File]    Script Date: 12/20/2019 10:09:34 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -9,9 +9,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Dump_File](
-	[fileName] [nchar](50) NOT NULL,
+	[fileName] [nchar](255) NOT NULL,
 	[dateTime] [datetime2](7) NULL,
-	[description] [nchar](100) NULL,
+	[description] [nchar](255) NULL,
 	[linesIgnored] [nchar](255) NULL,
 	[transactionid] [int] NOT NULL,
 	[id] [int] NOT NULL,
@@ -26,7 +26,7 @@ GO
 USE [mixed_bag]
 GO
 
-/****** Object:  Table [dbo].[Dump_Thread]    Script Date: 12/16/2019 10:48:59 AM ******/
+/****** Object:  Table [dbo].[Dump_Thread]    Script Date: 12/20/2019 10:10:12 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -68,4 +68,3 @@ GO
 ALTER TABLE [dbo].[Dump_Thread] CHECK CONSTRAINT [FK_DumpFile]
 GO
 ;
-

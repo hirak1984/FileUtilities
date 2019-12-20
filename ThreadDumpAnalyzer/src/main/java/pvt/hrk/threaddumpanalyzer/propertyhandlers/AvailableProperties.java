@@ -17,6 +17,7 @@ public void load(PropertyHolder holder) {
 		throw new IllegalArgumentException("Source not a valid file or directory : "+sourceFileOrDir.getAbsolutePath());
 	}
 	this.reportsDir = new File(holder.getReportsDir());
+	this.reportsDir.mkdirs();
 	if(!reportsDir.isDirectory()) {
 		throw new IllegalArgumentException("Reports direcotry invalid : "+reportsDir.getAbsolutePath());
 	}
