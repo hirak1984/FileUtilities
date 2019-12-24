@@ -43,7 +43,6 @@ public class MyFileFilterBuilder {
 	public FileFilter build() {
 		return (file) -> {
 			String fileName = file.getName();
-
 			if (isPartOfExcludedList(fileName)) {
 				return false;
 			}

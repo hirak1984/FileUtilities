@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class FileSearcher {
@@ -63,10 +64,8 @@ public class FileSearcher {
 	public static void searchInDirOrTextFile(File source, String searchStr, FileFilter filter, FileSearchResultContainer results,
 			BiConsumer<File, Throwable> handleIgnorableExceptions, boolean searchInNameOnly) {
 		boolean hasBeenVisitedbefore = results.hasBeenVisitedBefore(source);
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine("Now processing : " + source);
-			LOGGER.fine("Has been visited before? " + hasBeenVisitedbefore);
-		}
+		logger.debug("Now processing : {}",source);
+		logger.debug("Has been visited before? {}", hasBeenVisitedbefore);
 		if (!hasBeenVisitedbefore) {
 			if (source.isDirectory()) {
 				// If directory, traverse recursively
@@ -91,14 +90,12 @@ public class FileSearcher {
 					handleIgnorableExceptions.accept(source, e);
 				}
 			} else {
-				if (LOGGER.isLoggable(Level.FINE)) {
-					LOGGER.fine("File type not supported. Ignoring." + source);
-				}
+					logger.debug("File type not supported. Ignoring. {}",source);
 			}
 		}
 	}
 
 	// Input section end
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	  private static final Logger logger = LoggerFactory.getLogger(FileSearcher.class);
 
 }

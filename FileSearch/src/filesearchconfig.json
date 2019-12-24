@@ -1,0 +1,26 @@
+{
+  "Search_String_IgnoreCase": "X-Uaa-Csrf",
+   "Search_Locations_CSV": [
+    "C:\\Guidewire\\CustomerEngage10\\CustomerEngage_AccountManagement1000\\"
+  ],
+   "Exclude_Files_CSV": [
+    ".bak",
+    ".pdf",
+    ".class",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".pcfc",
+    ".gif",
+    ".ico",
+    ".dll",
+    ".lock",
+    ".mp4",
+    "node",
+    ".gz",
+    "DS_Store",
+    "un~",
+    "node_modules",
+    "Components_Examples"]
+  
+}

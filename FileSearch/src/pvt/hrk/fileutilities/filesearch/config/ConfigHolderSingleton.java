@@ -2,7 +2,6 @@ package pvt.hrk.fileutilities.filesearch.config;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,7 +21,8 @@ public enum ConfigHolderSingleton {
 	private static Logger LOGGER = LoggerFactory.getLogger(ConfigHolderSingleton.class);
 	private Metadata metadata;
 	private FileFilter filter;
-	private Path tempDirectory =null;
+	private Path tempDirectory = null;
+
 	private static class Metadata {
 		@SerializedName("Search_String_IgnoreCase")
 		String searchString;
@@ -34,7 +34,7 @@ public enum ConfigHolderSingleton {
 
 	public void handleException(File f, Throwable t) {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.warn("Error reading file:" + f.toPath()+" Error Message : "+t.getLocalizedMessage());
+			LOGGER.warn("Error reading file:" + f.toPath() + " Error Message : " + t.getLocalizedMessage());
 		}
 	}
 
@@ -52,54 +52,45 @@ public enum ConfigHolderSingleton {
 	public String searchString() {
 		return metadata.searchString;
 	}
-public Path getTempDirectoryPath() {
-	return tempDirectory;
-}
-	public void init(File propertiesFilePath) throws IOException {
 
-		InputStream is = null;
-		try {
-			if (propertiesFilePath != null) {
-				is = new FileInputStream(propertiesFilePath);
-			} else {
-				is = getClass().getResourceAsStream("filesearchconfig.json");
-			}
-
-			metadata = new Gson().fromJson(new InputStreamReader(is), Metadata.class);
-			tempDirectory = Files.createTempDirectory("FileSearch");
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-
-			      @Override
-			      public void run() {
-			    	  try {
-						deleteRecursively(tempDirectory.toFile());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			      }
-			 });
-		} catch (IOException e) {
-			throw e;
-		}
+	public Path getTempDirectoryPath() {
+		return tempDirectory;
 	}
 
+	public void init(InputStream fileSearchConfigInputStream) throws IOException {
 
-	private	void deleteRecursively(File f) throws IOException {
-		if(f==null) {
+		if (fileSearchConfigInputStream == null) {
+			throw new RuntimeException("fileSearchConfigInputStream can't be null");
+		}
+		metadata = new Gson().fromJson(new InputStreamReader(fileSearchConfigInputStream), Metadata.class);
+		tempDirectory = Files.createTempDirectory("FileSearch");
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					deleteRecursively(tempDirectory.toFile());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void deleteRecursively(File f) throws IOException {
+		if (f == null) {
 			return;
 		}
-			if(f.isDirectory()) {
-				File[] files = f.listFiles();
-				if(!ObjectUtils.isNullOrEmpty(files)) {
-					for(File file : files) {
-						deleteRecursively(file);
-					}
+		if (f.isDirectory()) {
+			File[] files = f.listFiles();
+			if (!ObjectUtils.isNullOrEmpty(files)) {
+				for (File file : files) {
+					deleteRecursively(file);
 				}
-			}else {
-				Files.deleteIfExists(f.toPath());
 			}
+		} else {
+			Files.deleteIfExists(f.toPath());
 		}
 	}
-	
-
+}
