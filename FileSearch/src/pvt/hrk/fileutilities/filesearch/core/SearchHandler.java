@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 
+import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
+
 public interface SearchHandler {
 
 	boolean matchInName(String searchString);
@@ -12,13 +14,17 @@ public interface SearchHandler {
 
 	List<File> getChildren(FileFilter filter);
 
-	default public boolean containsIgnoreCase(String line, String keyword) {
+	default public boolean contains(String line, String keyword) {
 		if(line==null) {
 			return false;
 		}
 		if(keyword==null) {
 			return false;
 		}
-		return line.toLowerCase().contains(keyword.toLowerCase());
+		if(ConfigHolderSingleton.INSTANCE.ignoreCase()) {
+			line = line.toLowerCase();
+			keyword = keyword.toLowerCase();
+		}
+		return line.contains(keyword);
 	}
 }

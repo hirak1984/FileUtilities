@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
+import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class ZipFileSearchHandler extends FileSearchHandler {
 
@@ -40,7 +41,7 @@ public class ZipFileSearchHandler extends FileSearchHandler {
 			return Files.list(dest).map(path -> path.toFile()).filter(file->filter.accept(file)).collect(Collectors.toList());
 
 		} catch (IOException e) {
-			ConfigHolderSingleton.INSTANCE.handleException(file, e);
+			ObjectUtils.handleException(file, e);
 		}
 		return super.getChildren(filter);
 	}

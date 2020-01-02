@@ -28,19 +28,17 @@ public class FileSearchMain {
 		}
 		ConfigHolderSingleton.INSTANCE.init(is);
 		is.close();
+		
 		Stream.of(ConfigHolderSingleton.INSTANCE.searchLocations()).forEach(searchLocation -> {
 			File searchIn = new File(searchLocation);
 			logger.info("=====Searching in [ {} ] =====", searchLocation);
 			try {
 				FileSearchResultContainer results = new FileSearchResultContainer();
-				MyFileSearcher.search(searchIn, ConfigHolderSingleton.INSTANCE.searchString(),
-						ConfigHolderSingleton.INSTANCE.getFileFilter(), results);
-				results.handleResults(f -> {
-					System.out.println(f.getAbsolutePath());
-					// logger.error(f.getAbsolutePath());
-				});
+				MyFileSearcher.search(searchIn, results);
+				results.getVisitedFilePaths().stream().forEach(System.out::println);
+
 			} catch (Exception e) {
-				ConfigHolderSingleton.INSTANCE.handleException(searchIn, e);
+				ObjectUtils.handleException(searchIn, e);
 			}
 		});
 		logger.info("Done");

@@ -1,12 +1,10 @@
-package pvt.hrk.fileutilities.filesearch.config;
+package pvt.hrk.fileutilities.utils;
 
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
-import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class MyFileFilterBuilder {
 	@SuppressWarnings("unused")

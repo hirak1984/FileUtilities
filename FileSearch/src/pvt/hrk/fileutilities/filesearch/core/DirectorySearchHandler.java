@@ -17,7 +17,7 @@ public class DirectorySearchHandler implements SearchHandler{
 
 	@Override
 	public boolean matchInName(String searchString) {
-		return containsIgnoreCase(this.directory.getName(), searchString);
+		return contains(this.directory.getName(), searchString);
 	}
 
 	@Override

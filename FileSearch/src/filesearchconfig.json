@@ -1,26 +1,30 @@
 {
-  "Search_String_IgnoreCase": "X-Uaa-Csrf",
-   "Search_Locations_CSV": [
-    "C:\\Guidewire\\CustomerEngage10\\CustomerEngage_AccountManagement1000\\"
-  ],
-   "Exclude_Files_CSV": [
-    ".bak",
-    ".pdf",
-    ".class",
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".pcfc",
-    ".gif",
-    ".ico",
-    ".dll",
-    ".lock",
-    ".mp4",
-    "node",
-    ".gz",
-    "DS_Store",
-    "un~",
-    "node_modules",
-    "Components_Examples"]
-  
+	"Search_String": ".stack3",
+	"Search_Locations_CSV": [
+		"C:\\TD_log_files"
+	],
+	"Ignore_Case": false,
+	"Search_In_Zip": false,
+	"Search_Name_Only": false,
+	"Include_Files_CSV": [],
+	"Exclude_Files_CSV": [
+		".bak",
+		".pdf",
+		".class",
+		".png",
+		".jpg",
+		".jpeg",
+		".pcfc",
+		".gif",
+		".ico",
+		".dll",
+		".lock",
+		".mp4",
+		"node",
+		".gz",
+		"DS_Store",
+		"un~",
+		"node_modules",
+		"Components_Examples"
+	]
 }

@@ -1,84 +1,43 @@
 package pvt.hrk.fileutilities.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public final class ObjectUtils {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	public static <T> Set<T> convertToSet(T[] array) {
-		return new HashSet<T>(Arrays.asList(array));
-	}
+import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
+
+public final class ObjectUtils {
+	private static Logger LOGGER = LoggerFactory.getLogger(ConfigHolderSingleton.class);
+
 	public static <T> boolean isNullOrEmpty(final T[] arr) {
 		return arr == null || arr.length == 0;
 	}
+
 	public static boolean isNullOrEmpty(final String str) {
 		return str == null || str.length() == 0;
 	}
+
 	public static <T> boolean isNullOrEmpty(final Collection<T> col) {
 		return col == null || col.size() == 0;
 	}
-	public static <K,V> boolean isNullOrEmpty(final Map<K,V> map) {
+
+	public static <K, V> boolean isNullOrEmpty(final Map<K, V> map) {
 		return map == null || map.size() == 0;
 	}
-	public static <T> Set<T> findIntersection(Set<T> set1, Set<T> set2) {
-		Set<T> commonFilesByName = new HashSet<>();
-		Iterator<T> it = set1.iterator();
-		while (it.hasNext()) {
-			T t = it.next();
-			if (set2.stream().anyMatch(s2 -> s2.equals(t))) {
-				commonFilesByName.add(t);
-			}
-		}
-		return commonFilesByName;
-	}
 
-	public static boolean areContentsEqual(File file1, File file2) {
-		try {
-			// return Arrays.equals(Files.readAllBytes(file1.toPath()),
-			// Files.readAllBytes(file2.toPath()));
-			return MD5HashFile(file1).equals(MD5HashFile(file2));
-		} catch (IOException | NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public static String MD5HashFile(File file) throws NoSuchAlgorithmException, IOException {
-		byte[] buf = ChecksumFile(file);
-		String res = "";
-		for (int i = 0; i < buf.length; i++) {
-			res += Integer.toString((buf[i] & 0xff) + 0x100, 16).substring(1);
-		}
-		return res;
-	}
 	public static final Predicate<String> isZipFile = filePath -> {
 		return Stream.of(new String[] { "zip", "jar" }).parallel()
-				.anyMatch(s -> StringSearchUtilities.endsWithIgnoreCase.test(filePath, s));
+				.anyMatch(s -> StringUtilities.endsWithIgnoreCase.test(filePath, s));
 	};
-	public static byte[] ChecksumFile(File file) throws NoSuchAlgorithmException, IOException {
-		InputStream fis = new FileInputStream(file);
-		byte[] buf = new byte[1024];
-		MessageDigest complete = MessageDigest.getInstance("MD5");
-		int n;
-		do {
-			n = fis.read(buf);
-			if (n > 0) {
-				complete.update(buf, 0, n);
-			}
-		} while (n != -1);
-		fis.close();
-		return complete.digest();
+
+	public static final void handleException(File f, Throwable t) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.warn("Error reading file:{} ,Error Message : {}",f.toPath(),t.getLocalizedMessage());
+		}
 	}
 }

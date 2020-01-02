@@ -2,6 +2,7 @@ package pvt.hrk.fileutilities.filesearch.core;
 
 import java.io.File;
 
+import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class SearchHandlerFactory {
@@ -11,12 +12,13 @@ public class SearchHandlerFactory {
 			return new DirectorySearchHandler(file);
 		}else if(file.isFile()) {
 			if(ObjectUtils.isZipFile.test(file.getName())) {
+				if(ConfigHolderSingleton.INSTANCE.searchInZip()) {
 				return new ZipFileSearchHandler(file);
+				}
 			}else {
 				return new FileSearchHandler(file);
 			}
-		}else {
-			return new NoOpSearchHandler(file);
 		}
+		return new NoOpSearchHandler(file);
 	}
 }

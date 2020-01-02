@@ -8,49 +8,58 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import pvt.hrk.fileutilities.utils.MyFileFilterBuilder;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public enum ConfigHolderSingleton {
 	INSTANCE;
-	private static Logger LOGGER = LoggerFactory.getLogger(ConfigHolderSingleton.class);
-	private Metadata metadata;
 	private FileFilter filter;
 	private Path tempDirectory = null;
-
+	private boolean ignoreCase=true;
+	private boolean searchInNameOnly=false;
+	private boolean searchInZip=true;
+	private String[] searchLocations;
+	private String searchString;
 	private static class Metadata {
-		@SerializedName("Search_String_IgnoreCase")
+		@SerializedName("Search_String")
 		String searchString;
 		@SerializedName("Search_Locations_CSV")
 		String[] searchLocations;
 		@SerializedName("Exclude_Files_CSV")
 		String[] exclusions;
+		@SerializedName("Include_Files_CSV")
+		String[] inclusions;
+		@SerializedName("Ignore_Case")
+		boolean ignoreCase;
+		@SerializedName("Search_In_Zip")
+		boolean searchInZip;
+		@SerializedName("Search_Name_Only")
+		boolean searchInNameOnly;
 	}
 
-	public void handleException(File f, Throwable t) {
-		if (LOGGER.isInfoEnabled()) {
-			LOGGER.warn("Error reading file:" + f.toPath() + " Error Message : " + t.getLocalizedMessage());
-		}
+	public boolean ignoreCase() {
+		return ignoreCase;
+	}
+	public boolean searchInNameOnly() {
+		return searchInNameOnly;
+	}
+	public boolean searchInZip() {
+		return searchInZip;
 	}
 
 	public FileFilter getFileFilter() {
-		if (filter == null) {
-			filter = new MyFileFilterBuilder().excludeFileNamesContaining(metadata.exclusions).build();
-		}
 		return filter;
 	}
 
 	public String[] searchLocations() {
-		return metadata.searchLocations;
+		return searchLocations;
 	}
 
 	public String searchString() {
-		return metadata.searchString;
+		return searchString;
 	}
 
 	public Path getTempDirectoryPath() {
@@ -62,8 +71,14 @@ public enum ConfigHolderSingleton {
 		if (fileSearchConfigInputStream == null) {
 			throw new RuntimeException("fileSearchConfigInputStream can't be null");
 		}
-		metadata = new Gson().fromJson(new InputStreamReader(fileSearchConfigInputStream), Metadata.class);
+		Metadata metadata = new Gson().fromJson(new InputStreamReader(fileSearchConfigInputStream), Metadata.class);
 		tempDirectory = Files.createTempDirectory("FileSearch");
+		filter = new MyFileFilterBuilder().excludeFileNamesContaining(metadata.exclusions).includeOnlyFileNamesContaining(metadata.inclusions).build();
+		ignoreCase = metadata.ignoreCase;
+		searchInNameOnly = metadata.searchInNameOnly;
+		searchInZip = metadata.searchInZip;
+		searchLocations = metadata.searchLocations;
+		searchString = metadata.searchString;
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 
 			@Override

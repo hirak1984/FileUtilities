@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
+import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class FileSearchHandler implements SearchHandler{
 
@@ -21,15 +21,15 @@ public class FileSearchHandler implements SearchHandler{
 
 	@Override
 	public boolean matchInName(String searchString) {
-		return containsIgnoreCase(file.getName(), searchString);
+		return contains(file.getName(), searchString);
 	}
 
 	@Override
 	public boolean matchInContent(String searchString) {
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-			return bufferedReader.lines().parallel().anyMatch(line->containsIgnoreCase(line, searchString));
+			return bufferedReader.lines().parallel().anyMatch(line->contains(line, searchString));
 		} catch (IOException  e) {
-			ConfigHolderSingleton.INSTANCE.handleException(file, e);
+			ObjectUtils.handleException(file, e);
 		} 
 		return false;
 	}
