@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
-import pvt.hrk.fileutilities.filesearch.core.FileSearchResultContainer;
 import pvt.hrk.fileutilities.filesearch.core.MyFileSearcher;
+import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ConsolidatedResultHandler;
+import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ImmediateResultHandler;
+import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ResultHandler;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class FileSearchMain {
@@ -28,15 +30,15 @@ public class FileSearchMain {
 		}
 		ConfigHolderSingleton.INSTANCE.init(is);
 		is.close();
-		
+
 		Stream.of(ConfigHolderSingleton.INSTANCE.searchLocations()).forEach(searchLocation -> {
 			File searchIn = new File(searchLocation);
-			logger.info("=====Searching in [ {} ] =====", searchLocation);
+			logger.info("Searching in [ {} ] ", searchLocation);
 			try {
-				FileSearchResultContainer results = new FileSearchResultContainer();
-				MyFileSearcher.search(searchIn, results);
-				results.getVisitedFilePaths().stream().forEach(System.out::println);
-
+				ResultHandler results = new ImmediateResultHandler(System.out);
+				results.init();
+				new MyFileSearcher().searchRecursively(searchIn, results);
+				results.finish();
 			} catch (Exception e) {
 				ObjectUtils.handleException(searchIn, e);
 			}

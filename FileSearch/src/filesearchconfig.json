@@ -1,11 +1,11 @@
 {
-	"Search_String": ".stack3",
+	"Search_String": "",
 	"Search_Locations_CSV": [
-		"C:\\TD_log_files"
+		
 	],
 	"Ignore_Case": false,
 	"Search_In_Zip": false,
-	"Search_Name_Only": false,
+	"Search_Name_Only": true,
 	"Include_Files_CSV": [],
 	"Exclude_Files_CSV": [
 		".bak",

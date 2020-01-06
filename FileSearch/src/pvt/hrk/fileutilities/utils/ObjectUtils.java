@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 
 public final class ObjectUtils {
-	private static Logger LOGGER = LoggerFactory.getLogger(ConfigHolderSingleton.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ObjectUtils.class);
 
 	public static <T> boolean isNullOrEmpty(final T[] arr) {
 		return arr == null || arr.length == 0;
@@ -38,6 +38,7 @@ public final class ObjectUtils {
 	public static final void handleException(File f, Throwable t) {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.warn("Error reading file:{} ,Error Message : {}",f.toPath(),t.getLocalizedMessage());
+			//LOGGER.error("Error reading file:"+f, t);
 		}
 	}
 }

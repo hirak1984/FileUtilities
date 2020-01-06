@@ -4,11 +4,14 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 
 public class MyFileFilterBuilder {
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static Logger LOGGER = LoggerFactory.getLogger(MyFileFilterBuilder.class);
 	private List<String> includeOnlyFileNamesContaining;
 	private List<String> excludeFileNamesContaining;
 
@@ -40,17 +43,22 @@ public class MyFileFilterBuilder {
 
 	public FileFilter build() {
 		return (file) -> {
+			boolean retVal = false;
 			String fileName = file.getName();
-			if (isPartOfExcludedList(fileName)) {
-				return false;
+
+			if (ConfigHolderSingleton.INSTANCE.searchInNameOnly()) {
+				retVal = true;
+			} else if (isPartOfExcludedList(fileName)) {
+				retVal = false;
+			} else if (isPartOfIncludedList(fileName)) {
+				retVal = true;
+			} else if (file.isDirectory()) {
+				retVal = true; // dir not in excluded/included list, so give the files inside this dir a chance
+			} else {
+				retVal = false;
 			}
-			if (isPartOfIncludedList(fileName)) {
-				return true;
-			}
-			if (file.isDirectory()) {
-				return true; // to give the files inside this dir a chance
-			}
-			return false;
+			LOGGER.trace("File= {} , retVal={}", fileName,retVal);
+			return retVal;
 		};
 	}
 
@@ -58,16 +66,16 @@ public class MyFileFilterBuilder {
 		if (ObjectUtils.isNullOrEmpty(excludeFileNamesContaining)) {
 			return false;
 		} else {
-			return excludeFileNamesContaining.stream().anyMatch(name -> fileName.contains(name));
+			return excludeFileNamesContaining.parallelStream().anyMatch(fileName::contains);
 		}
 	}
 
 	boolean isPartOfIncludedList(String fileName) {
 		if (ObjectUtils.isNullOrEmpty(includeOnlyFileNamesContaining)) {
-			//if included list is empty, that means everything is included.
+			// if included list is empty, that means everything is included.
 			return true;
 		} else {
-			return includeOnlyFileNamesContaining.stream().anyMatch(name -> fileName.contains(name));
+			return includeOnlyFileNamesContaining.parallelStream().anyMatch(fileName::contains);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package pvt.hrk.fileutilities.filesearch.core;
+package pvt.hrk.fileutilities.filesearch.core.searchhandlers;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,7 +15,7 @@ private static Logger LOGGER = LoggerFactory.getLogger(NoOpSearchHandler.class);
 	public NoOpSearchHandler(File file) {
 	super();
 	this.file = file;
-	LOGGER.warn("File "+file.getAbsoluteFile()+" went through NoOpHandler");
+	LOGGER.debug("File {} went through NoOpHandler",file.getAbsoluteFile());
 	
 }
 

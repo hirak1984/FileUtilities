@@ -1,4 +1,4 @@
-package pvt.hrk.fileutilities.filesearch.core;
+package pvt.hrk.fileutilities.filesearch.core.searchhandlers;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
