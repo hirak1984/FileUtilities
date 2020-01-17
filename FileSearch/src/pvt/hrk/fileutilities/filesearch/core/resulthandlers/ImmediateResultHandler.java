@@ -29,7 +29,7 @@ public class ImmediateResultHandler implements ResultHandler {
 
 	@Override
 	public void finish() {
-		//do nothing
+		System.out.println("");
 	}
 
 }

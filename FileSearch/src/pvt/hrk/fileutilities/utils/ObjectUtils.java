@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
-
 public final class ObjectUtils {
 	private static Logger LOGGER = LoggerFactory.getLogger(ObjectUtils.class);
 

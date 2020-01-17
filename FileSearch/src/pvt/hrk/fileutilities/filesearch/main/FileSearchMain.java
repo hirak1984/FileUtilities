@@ -13,6 +13,7 @@ import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 import pvt.hrk.fileutilities.filesearch.core.MyFileSearcher;
 import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ConsolidatedResultHandler;
 import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ImmediateResultHandler;
+import pvt.hrk.fileutilities.filesearch.core.resulthandlers.PrintDistinctParentDirectories;
 import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ResultHandler;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 
@@ -35,7 +36,7 @@ public class FileSearchMain {
 			File searchIn = new File(searchLocation);
 			logger.info("Searching in [ {} ] ", searchLocation);
 			try {
-				ResultHandler results = new ImmediateResultHandler(System.out);
+				ResultHandler results = new ConsolidatedResultHandler(System.out);
 				results.init();
 				new MyFileSearcher().searchRecursively(searchIn, results);
 				results.finish();

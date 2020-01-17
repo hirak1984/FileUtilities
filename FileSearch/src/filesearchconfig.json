@@ -1,27 +1,13 @@
 {
-	"Search_String": "",
+	"Search_String": "test",
 	"Search_Locations_CSV": [
-		
+		"C:\\tmp"
 	],
-	"Ignore_Case": false,
+	"Ignore_Case": true,
 	"Search_In_Zip": false,
-	"Search_Name_Only": true,
+	"Search_Name_Only": false,
 	"Include_Files_CSV": [],
 	"Exclude_Files_CSV": [
-		".bak",
-		".pdf",
-		".class",
-		".png",
-		".jpg",
-		".jpeg",
-		".pcfc",
-		".gif",
-		".ico",
-		".dll",
-		".lock",
-		".mp4",
-		"node",
-		".gz",
 		"DS_Store",
 		"un~",
 		"node_modules",

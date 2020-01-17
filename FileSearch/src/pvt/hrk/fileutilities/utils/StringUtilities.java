@@ -22,4 +22,15 @@ public class StringUtilities {
 		}
 		return str.toLowerCase().startsWith(startsWith.toLowerCase());
 	};
+	public static final BiPredicate<String, String[]> containsAnyIgnoreCase = (str, contains) -> {
+		if (str == null || contains == null) {
+			return false;
+		}
+		for(String contain:contains) {
+			if(containsIgnoreCase.test(str, contain)) {
+				return true;
+			}
+		}
+		return false;
+	};
 }

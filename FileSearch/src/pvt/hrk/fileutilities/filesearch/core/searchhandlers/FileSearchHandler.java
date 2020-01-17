@@ -12,7 +12,7 @@ import pvt.hrk.fileutilities.utils.ObjectUtils;
 
 public class FileSearchHandler implements SearchHandler{
 
-	File file;
+	protected File file;
 
 	public FileSearchHandler(File file) {
 		super();

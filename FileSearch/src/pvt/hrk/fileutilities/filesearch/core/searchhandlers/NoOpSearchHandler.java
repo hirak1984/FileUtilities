@@ -15,13 +15,13 @@ private static Logger LOGGER = LoggerFactory.getLogger(NoOpSearchHandler.class);
 	public NoOpSearchHandler(File file) {
 	super();
 	this.file = file;
-	LOGGER.debug("File {} went through NoOpHandler",file.getAbsoluteFile());
+	LOGGER.trace("File {} went through NoOpHandler",file.getAbsoluteFile());
 	
 }
 
 	@Override
 	public boolean matchInName(String searchString) {
-		return false;
+		return contains(file.getName(), searchString);
 	}
 
 	@Override
