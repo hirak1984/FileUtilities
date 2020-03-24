@@ -36,7 +36,7 @@ public final class ObjectUtils {
 	public static final void handleException(File f, Throwable t) {
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.warn("Error reading file:{} ,Error Message : {}",f.toPath(),t.getLocalizedMessage());
-			//LOGGER.error("Error reading file:"+f, t);
+			t.printStackTrace();
 		}
 	}
 }

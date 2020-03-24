@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 import pvt.hrk.fileutilities.utils.StringUtilities;
 
@@ -18,12 +19,13 @@ public class SearchHandlerFactory {
 		switch (contentType) {
 		case DIRECTORY:
 			return new DirectorySearchHandler(file);
-		case COMPRESSED:
-			return new ZipFileSearchHandler(file);
 		case PDF:
 			return new PDFFileSearchHandler(file);
 		case TEXT:
 			return new FileSearchHandler(file);
+		case COMPRESSED:
+			return ConfigHolderSingleton.INSTANCE.searchInZip() ? new ZipFileSearchHandler(file)
+					: new NoOpSearchHandler(file);
 		default:
 			return new NoOpSearchHandler(file);
 		}
@@ -48,7 +50,12 @@ public class SearchHandlerFactory {
 			ObjectUtils.handleException(file, e);
 		}
 		if (contentType == null) {
-			return ContentTypes.UNKNOWN;
+			if (StringUtilities.containsAnyIgnoreCase.test(file.getAbsolutePath(), new String[] { "gwp" })) {
+				return ContentTypes.TEXT;
+			} else {
+				return ContentTypes.UNKNOWN;
+			}
+
 		}
 		if (StringUtilities.containsIgnoreCase.test(contentType, "compressed")) {
 			return ContentTypes.COMPRESSED;
