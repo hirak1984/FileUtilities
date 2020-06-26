@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-    <pattern>  %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
-  </encoder>
-    </appender>
-    <logger name="pvt.hrk" level="info" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern> %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
 
-    <root level="trace">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+	<appender name="Log_File" class="ch.qos.logback.core.FileAppender">
+		<file>./FileSearch.log</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+		<appender name="Result_File" class="ch.qos.logback.core.FileAppender">
+		<file>./result.log</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+		<logger name="pvt.hrk.fileutilities.filesearch.core.resulthandlers" level="info" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="Result_File" />
+	</logger>
+	<logger name="pvt.hrk" level="debug" additivity="false">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="Log_File" />
+	</logger>
+
+	<root level="trace">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="Log_File" />
+	</root>
 
 </configuration>

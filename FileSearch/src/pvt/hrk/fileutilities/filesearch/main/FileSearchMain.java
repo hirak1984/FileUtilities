@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import pvt.hrk.fileutilities.filesearch.config.ConfigHolderSingleton;
 import pvt.hrk.fileutilities.filesearch.core.MyFileSearcher;
 import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ConsolidatedResultHandler;
-import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ImmediateResultHandler;
-import pvt.hrk.fileutilities.filesearch.core.resulthandlers.PrintDistinctParentDirectories;
 import pvt.hrk.fileutilities.filesearch.core.resulthandlers.ResultHandler;
 import pvt.hrk.fileutilities.utils.ObjectUtils;
 

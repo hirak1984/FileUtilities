@@ -20,6 +20,9 @@ public class MyFileSearcher {
 
 	public void searchRecursively(File source, ResultHandler resultHandler) {
 		if (LOGGER.isDebugEnabled()) {
+			if(source.getName().equalsIgnoreCase("idp")) {
+				System.out.println();
+			}
 			LOGGER.debug("Now processing : " + source);
 		}
 		SearchHandler handler = SearchHandlerFactory.Handler(source);

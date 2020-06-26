@@ -30,13 +30,16 @@ public class ConsolidatedResultHandler implements ResultHandler{
 	@Override
 	public void finish() throws IOException {
 		os.write("============ Results============\n".getBytes());
+		logger.info("============ Results============");
 		Iterator<String> it = results.iterator();
 		while(it.hasNext()) {
 			String line = it.next();
 			os.write(line.getBytes());
 			os.write("\n".getBytes());
+			logger.info(line);
 		}
 		os.write("================================\n".getBytes());
+		logger.info("================================");
 	}
 
 

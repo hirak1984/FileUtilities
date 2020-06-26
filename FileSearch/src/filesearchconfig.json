@@ -1,16 +1,14 @@
 {
-	"Search_String": "test",
+	"Search_String": "SAMLContextProviderImpl",
 	"Search_Locations_CSV": [
-		"C:\\tmp"
+	"C:\\Guidewire\\CustomerEngage10\\uaa_source\\uaa\\server\\src\\main\\java\\org\\cloudfoundry"
 	],
 	"Ignore_Case": true,
 	"Search_In_Zip": false,
 	"Search_Name_Only": false,
-	"Include_Files_CSV": [],
+	"Include_Files_CSV": [
+	],
 	"Exclude_Files_CSV": [
-		"DS_Store",
-		"un~",
-		"node_modules",
 		"Components_Examples"
 	]
 }
